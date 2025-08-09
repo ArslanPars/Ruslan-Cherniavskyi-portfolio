@@ -11,10 +11,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
     <script type="module" src="app.js"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
 </head>
 <body>
     <!-- Full-screen canvas for WebGL smoke simulation -->
-    <canvas id="gradient-canvas"></canvas>
+    <div id="gradient-canvas"></div>
     <!-- Navigation bar -->
     <nav>
         <div class="logo">RUSLAN • 3D</div>
@@ -102,6 +105,6 @@
             <div id="viewer-container" class="viewer"></div>
         </div>
     </div>
-    <script type="module" src="gradient.js"></script>
+    <script type="text/babel" src="gradient.js"></script>
 </body>
 </html>
