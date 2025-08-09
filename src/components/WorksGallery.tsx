@@ -42,15 +42,15 @@ const worksData: Work[] = [
     id: 'perfume',
     title: 'Pure Dreamer',
     subtitle: 'Product visualisation · Blender · CAD',
-    coverImage: '/assets/works/perfume/cover.jpg',
-    href: '/assets/works/perfume.html',
+    coverImage: 'https://images.unsplash.com/photo-1610300011228-aa944f03af23?w=400&h=240&fit=crop&crop=center',
+    href: 'assets/works/perfume.html',
   },
   {
     id: 'loreal',
     title: "L'Oréal Paris Visualization",
     subtitle: 'Product visualisation · Blender · CAD',
-    coverImage: '/assets/works/loreal/cover.png',
-    href: '/assets/works/loreal.html',
+    coverImage: 'https://images.unsplash.com/photo-1739961530627-4ca0bb400ace?w=400&h=240&fit=crop&crop=center',
+    href: 'assets/works/loreal.html',
   },
 ];
 

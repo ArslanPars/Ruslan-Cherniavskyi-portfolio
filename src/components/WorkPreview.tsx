@@ -1,5 +1,5 @@
-import React from 'react';
-import { Card, CardMedia, CardContent, Typography, Box } from '@mui/material';
+import React, { useState } from 'react';
+import { Card, CardContent, Typography, Box } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 const StyledCard = styled(Card)(({ theme }) => ({
@@ -11,6 +11,7 @@ const StyledCard = styled(Card)(({ theme }) => ({
   border: '1px solid rgba(255, 255, 255, 0.1)',
   cursor: 'pointer',
   transition: 'all 0.3s ease',
+  height: '320px',
   '&:hover': {
     transform: 'translateY(-4px)',
     border: '1px solid rgba(255, 255, 255, 0.2)',
@@ -20,9 +21,31 @@ const StyledCard = styled(Card)(({ theme }) => ({
   },
 }));
 
-const StyledCardMedia = styled(CardMedia)({
-  height: 240,
+const ImageContainer = styled(Box)({
+  position: 'relative',
+  width: '100%',
+  height: '240px',
+  overflow: 'hidden',
+  backgroundColor: '#1a1a1a',
+});
+
+const StyledImage = styled('img')({
+  width: '100%',
+  height: '100%',
+  objectFit: 'cover',
   transition: 'transform 0.5s ease',
+  display: 'block',
+});
+
+const PlaceholderBox = styled(Box)({
+  width: '100%',
+  height: '100%',
+  backgroundColor: '#2a2a2a',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  color: '#666',
+  fontSize: '14px',
 });
 
 const GradientOverlay = styled(Box)({
@@ -31,7 +54,7 @@ const GradientOverlay = styled(Box)({
   left: 0,
   right: 0,
   bottom: 0,
-  background: 'linear-gradient(to top, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.1) 50%, transparent 100%)',
+  background: 'linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.2) 50%, transparent 100%)',
   pointerEvents: 'none',
 });
 
@@ -42,6 +65,7 @@ const ContentOverlay = styled(CardContent)({
   right: 0,
   color: 'white',
   padding: '16px 20px',
+  zIndex: 2,
 });
 
 interface WorkPreviewProps {
@@ -59,6 +83,9 @@ const WorkPreview: React.FC<WorkPreviewProps> = ({
   href,
   onClick,
 }) => {
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
+
   const handleClick = () => {
     if (onClick) {
       onClick();
@@ -67,13 +94,58 @@ const WorkPreview: React.FC<WorkPreviewProps> = ({
     }
   };
 
+  const handleImageLoad = () => {
+    setImageLoaded(true);
+    setImageError(false);
+  };
+
+  const handleImageError = () => {
+    setImageError(true);
+    setImageLoaded(false);
+  };
+
+  // Get attribution based on the image
+  const getAttribution = (imageUrl: string) => {
+    if (imageUrl.includes('photo-1610300011228')) {
+      return 'Product visualization by Tamara Harhai on Unsplash';
+    } else if (imageUrl.includes('photo-1739961530627')) {
+      return 'Product visualization by Aleksandrs Karevs on Unsplash';
+    }
+    return title;
+  };
+
   return (
     <StyledCard onClick={handleClick}>
-      <StyledCardMedia
-        className="cover-image"
-        image={coverImage}
-        title={title}
-      />
+      <ImageContainer>
+        {!imageError ? (
+          <StyledImage
+            src={coverImage}
+            alt={getAttribution(coverImage)}
+            className="cover-image"
+            onLoad={handleImageLoad}
+            onError={handleImageError}
+            style={{
+              opacity: imageLoaded ? 1 : 0,
+              transition: 'opacity 0.3s ease',
+            }}
+          />
+        ) : (
+          <PlaceholderBox>
+            <Typography variant="body2" color="inherit">
+              {title}
+            </Typography>
+          </PlaceholderBox>
+        )}
+        
+        {!imageLoaded && !imageError && (
+          <PlaceholderBox>
+            <Typography variant="body2" color="inherit">
+              Loading...
+            </Typography>
+          </PlaceholderBox>
+        )}
+      </ImageContainer>
+      
       <GradientOverlay />
       <ContentOverlay>
         <Typography
