@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruslan Cherniavskyi Portfolio</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Load Three.js and viewer script -->
+    <script type="module" src="app.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Ruslan Cherniavskyi Portfolio</h1>
+        <p>Интерактивная галерея 3D‑работ</p>
+    </header>
+    <main>
+        <section id="gallery" class="gallery"></section>
+    </main>
+
+    <!-- Modal for 3D viewer -->
+    <div id="viewer-modal" class="modal hidden">
+        <div class="modal-content">
+            <button class="close-button" aria-label="Close viewer">&times;</button>
+            <div class="viewer-controls">
+                <label>
+                    HDRI:
+                    <select id="hdri-select"></select>
+                </label>
+                <label>
+                    <input type="checkbox" id="wireframe-toggle">
+                    Полигональна сетка
+                </label>
+                <label>
+                    <input type="checkbox" id="material-toggle">
+                    Без материалов
+                </label>
+            </div>
+            <div id="viewer-container" class="viewer"></div>
+        </div>
+    </div>
+</body>
+</html>
