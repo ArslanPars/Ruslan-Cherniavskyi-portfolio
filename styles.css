@@ -1,120 +1,236 @@
-/* Basic styles for portfolio gallery and viewer */
+/* Root variables for dark theme */
+:root {
+    --bg: #0e0f12;
+    --bg-light: #15171c;
+    --card: #15171c;
+    --text: #e6e7eb;
+    --muted: #a0a3b0;
+    --accent: #5eead4;
+    --accent-cold: #60a5fa;
+    --radius: 1rem;
+}
+* {
+    box-sizing: border-box;
+}
 body {
     margin: 0;
-    font-family: sans-serif;
-    background-color: #f8f8f8;
-    color: #222;
+    /* Use Inter for body text as suggested in the style guide */
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
 }
-
-header {
-    text-align: center;
-    padding: 2rem 1rem;
-    background-color: #fff;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+/* Apply Space Grotesk to headings */
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Space Grotesk', sans-serif;
 }
-
-header h1 {
+/* Navigation bar */
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(10px);
+    background-color: rgba(14, 15, 18, 0.8);
+}
+nav .logo {
+    font-weight: 700;
+    font-size: 1.25rem;
+}
+nav .nav-links {
+    list-style: none;
+    display: flex;
+    gap: 1.5rem;
     margin: 0;
-    font-size: 2rem;
+    padding: 0;
 }
-
-header p {
-    margin: 0.5rem 0 0;
-    color: #555;
+nav .nav-links a {
+    color: var(--text);
+    text-decoration: none;
+    font-size: 1rem;
+    transition: color 0.2s;
 }
-
-main {
+nav .nav-links a:hover {
+    color: var(--accent);
+}
+/* Hero section */
+.hero {
+    text-align: center;
+    padding: 4rem 2rem;
     max-width: 1000px;
-    margin: 2rem auto;
-    padding: 0 1rem;
+    margin: 0 auto;
 }
-
+.hero h1 {
+    font-size: 3rem;
+    line-height: 1.2;
+    margin: 0 0 1rem;
+}
+.hero p {
+    font-size: 1.25rem;
+    margin: 0 0 2rem;
+    color: var(--muted);
+}
+.cta-button {
+    background: linear-gradient(90deg, var(--accent), var(--accent-cold));
+    border: none;
+    color: var(--bg);
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-weight: 600;
+}
+.cta-button:hover {
+    opacity: 0.9;
+}
+/* Sections */
+.works-section,
+.about-section,
+.contact-section {
+    padding: 4rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+.works-section h2,
+.about-section h2,
+.contact-section h2 {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+}
+/* Filters */
+.filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+.filter-chip {
+    padding: 0.4rem 0.8rem;
+    background-color: var(--card);
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-size: 0.85rem;
+    color: var(--muted);
+    transition: all 0.2s;
+    border: 1px solid transparent;
+}
+.filter-chip.active,
+.filter-chip:hover {
+    background: linear-gradient(90deg, var(--accent), var(--accent-cold));
+    color: var(--bg);
+}
+/* Gallery grid */
 .gallery {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
 }
-
-.gallery-item {
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+.card {
+    background-color: var(--card);
+    border-radius: var(--radius);
     overflow: hidden;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
     cursor: pointer;
-    transition: transform 0.1s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s, box-shadow 0.2s;
 }
-
-.gallery-item:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
 }
-
-.gallery-item img {
+.card img {
     width: 100%;
-    height: 150px;
+    height: 180px;
     object-fit: cover;
-    display: block;
 }
-
-.gallery-item h3 {
+.card-body {
+    padding: 1rem;
+}
+.card-title {
+    margin: 0 0 0.5rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+.card-subtitle {
     margin: 0;
-    padding: 0.5rem;
-    font-size: 1rem;
+    font-size: 0.9rem;
+    color: var(--muted);
 }
-
-/* Modal styles */
+.card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.75rem;
+}
+/* Tags inside cards: use a subtle pill with translucent background to mirror the design mockup */
+.tag {
+    padding: 0.25rem 0.6rem;
+    font-size: 0.75rem;
+    background-color: rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius);
+    color: var(--text);
+    white-space: nowrap;
+}
+.about-section p,
+.contact-section p {
+    font-size: 1rem;
+    color: var(--muted);
+    line-height: 1.6;
+}
+/* Modal */
 .modal {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
     display: flex;
     align-items: center;
     justify-content: center;
+    background: rgba(0, 0, 0, 0.7);
     z-index: 1000;
 }
-
 .modal.hidden {
     display: none;
 }
-
 .modal-content {
-    background: #fff;
-    border-radius: 8px;
+    background-color: var(--card);
+    border-radius: var(--radius);
     max-width: 90%;
     width: 1000px;
     max-height: 90%;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
 }
-
 .close-button {
     align-self: flex-end;
-    border: none;
     background: transparent;
-    font-size: 1.5rem;
-    margin: 0.5rem 1rem 0 0;
+    border: none;
+    font-size: 2rem;
+    color: var(--text);
     cursor: pointer;
+    padding: 0.5rem 1rem;
 }
-
 .viewer-controls {
     display: flex;
     flex-wrap: wrap;
     gap: 1rem;
-    padding: 0 1rem 1rem;
-    font-size: 0.9rem;
+    padding: 1rem;
 }
-
 .viewer-controls label {
     display: flex;
     align-items: center;
     gap: 0.25rem;
+    color: var(--muted);
 }
-
+.viewer-controls select,
+.viewer-controls input[type="checkbox"] {
+    margin-left: 0.5rem;
+}
 .viewer {
     flex: 1;
-    background: #000;
+    background-color: #000;
 }
