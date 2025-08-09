@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <!-- Import custom fonts: Space Grotesk for headings and Inter for body text -->
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
     <script type="module" src="app.js"></script>
 </head>
@@ -16,32 +17,41 @@
     <nav>
         <div class="logo">RUSLAN • 3D</div>
         <ul class="nav-links">
-            <li><a href="#works">Projects</a></li>
-            <li><a href="#about">About me</a></li>
-            <li><a href="#contact">Contacts</a></li>
+            <li><a href="#works">Works</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+            <li><a href="projects/common.html">Models</a></li>
+            <li><a href="projects/cad.html">CAD&nbsp;Models</a></li>
         </ul>
     </nav>
     <!-- Hero section -->
     <header class="hero">
         <h1>Product visualisation<br>Hard‑Surface | CAD</h1>
-        <button id="scroll-to-works" class="cta-button">See projects</button>
+        <p>I turn engineering models into stunning visualizations</p>
+        <button id="scroll-to-works" class="cta-button">View&nbsp;works</button>
     </header>
     <main>
         <!-- Works section -->
         <section id="works" class="works-section">
-            <h2>Projects</h2>
+            <h2>Works</h2>
             <div id="filters" class="filters"></div>
             <div id="gallery" class="gallery"></div>
         </section>
         <!-- About section -->
         <section id="about" class="about-section">
-            <h2>About me</h2>
-            <p>I'm Ruslan, a 3D artist and engineer with a Master's degree in Computer Engineering. I specialize in creating high-quality visualizations for products, CAD models, and hard-surface objects.</p>
+            <h2>About</h2>
+            <p>Hello! I'm Ruslan, a 3D artist and engineer with a master's degree in computer engineering. I specialize in creating high‑quality visualizations for products, CAD models and hard‑surface objects.</p>
         </section>
         <!-- Contact section -->
         <section id="contact" class="contact-section">
-            <h2>Contacts</h2>
-            <p>Let's discuss your project! Contact me by email: <a href="mailto:chernyavskyj3d@gmail.com">chernyavskyj3d@gmail.com</a>.</p>
+            <h2>Contact</h2>
+            <p>Let’s discuss your project! Get in touch via email: <a href="mailto:chernyavskyj@gmail.com">chernyavskyj@gmail.com</a>.</p>
+            <div class="contact-icons">
+              <a href="https://www.upwork.com/freelancers/ruslanchernianskiy" target="_blank" aria-label="UpWork"><i class="fa-brands fa-upwork"></i></a>
+              <a href="https://www.linkedin.com/in/ruslan-chernianskiy-6b772022a" target="_blank" aria-label="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
+              <a href="https://x.com/Chernianskiy" target="_blank" aria-label="X"><i class="fa-brands fa-x-twitter"></i></a>
+              <a href="https://www.artstation.com/chernianskiy" target="_blank" aria-label="ArtStation"><i class="fa-brands fa-artstation"></i></a>
+            </div>
         </section>
     </main>
     <!-- Modal for 3D viewer -->
@@ -59,7 +69,7 @@
                 </label>
                 <label>
                     <input type="checkbox" id="material-toggle">
-                    Without materials
+                    Без материалов
                 </label>
             </div>
             <div id="viewer-container" class="viewer"></div>
