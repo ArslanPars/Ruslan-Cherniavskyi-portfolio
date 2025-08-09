@@ -21,8 +21,13 @@ const App: React.FC = () => {
         <CssBaseline />
         <Box
           sx={{
-            minHeight: '100vh',
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100vw',
+            height: '100vh',
             background: 'linear-gradient(135deg, #0e0f12 0%, #15171c 100%)',
+            overflow: 'auto',
           }}
         >
           <WorksGallery />
