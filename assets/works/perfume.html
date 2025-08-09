@@ -3,13 +3,11 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Perfume Visualization — Ruslan Cherniavskyi</title>
-  <!-- Tailwind, как у тебя на главной -->
+  <title>Pure Dreamer — Ruslan Cherniavskyi</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-[#0b0b12] text-white selection:bg-fuchsia-400/30">
-  <!-- Header (можешь импортировать свой) -->
-  <header class="max-w-6xl mx-auto px-6 sm:px-8 py-6 flex items-center justify-between">
+<body class="bg-[#0b0b12] text-white">
+  <header class="max-w-6xl mx-auto px-6 sm:px-8 py-6 flex justify-between">
     <a href="/" class="text-lg font-semibold tracking-tight">Ruslan Cherniavskyi</a>
     <nav class="text-sm text-white/80">
       <a href="/" class="hover:text-white">Home</a>
@@ -17,28 +15,22 @@
   </header>
 
   <main class="max-w-6xl mx-auto px-6 sm:px-8 pb-24">
-    <!-- Hero -->
     <section class="py-6">
-      <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight mb-4">Perfume Visualization</h1>
+      <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight mb-4">Pure Dreamer</h1>
       <p class="text-white/80 max-w-3xl">
-        High-quality product visualisation of a perfume bottle. Focus on glass, liquid, label, and moody lighting.
+        High-quality product visualisation of a men's perfume bottle. Focus on glass, liquid, label, and moody lighting.
       </p>
     </section>
-
-    <!-- Cover -->
     <section class="mt-8">
-      <img src="/assets/works/perfume/cover.jpg" alt="Perfume cover"
+      <img src="/assets/works/perfume/cover.jpg" alt="Pure Dreamer cover"
            class="w-full rounded-2xl ring-1 ring-white/10">
     </section>
-
-    <!-- Gallery -->
     <section class="mt-10">
       <h2 class="text-2xl font-bold mb-4">Gallery</h2>
       <div id="grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
     </section>
   </main>
 
-  <!-- Lightbox -->
   <div id="lightbox" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 p-4">
     <button id="closeLb" class="absolute top-4 right-4 rounded-xl bg-white/10 px-3 py-2 hover:bg-white/20">
       Close
@@ -49,15 +41,11 @@
   </div>
 
   <script>
-    // 1) добавь сюда свои имена файлов
     const images = [
       "/assets/works/perfume/01.jpg",
       "/assets/works/perfume/02.jpg",
-      "/assets/works/perfume/03.jpg",
-      // можно продолжать список
+      "/assets/works/perfume/03.jpg"
     ];
-
-    // 2) строим сетку
     const grid = document.getElementById('grid');
     images.forEach((src, i) => {
       const a = document.createElement('a');
@@ -74,29 +62,23 @@
       grid.appendChild(a);
     });
 
-    // 3) простой лайтбокс
     const lb = document.getElementById('lightbox');
     const lbImg = document.getElementById('lbImg');
     const closeLb = document.getElementById('closeLb');
     const prev = document.getElementById('prev');
     const next = document.getElementById('next');
     let idx = 0;
-
     function openLightbox(i){
       idx = i;
       lbImg.src = images[idx];
       lb.classList.remove('hidden');
       lb.classList.add('flex');
     }
-    function closeLightbox(){
-      lb.classList.add('hidden');
-      lb.classList.remove('flex');
-    }
+    function closeLightbox(){ lb.classList.add('hidden'); lb.classList.remove('flex'); }
     function show(delta){
       idx = (idx + delta + images.length) % images.length;
       lbImg.src = images[idx];
     }
-
     closeLb.addEventListener('click', closeLightbox);
     prev.addEventListener('click', () => show(-1));
     next.addEventListener('click', () => show(1));
