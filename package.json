@@ -1,0 +1,24 @@
+{
+  "name": "Ruslan-Cherniavskyi-portfolio",
+  "version": "1.0.0",
+  "description": "Этот репозиторий содержит исходный код статического сайта портфолио, размещённого на GitHub Pages. На сайте реализована интерактивная галерея 3D‑работ с возможностью просмотра моделей прямо в браузере.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ArslanPars/Ruslan-Cherniavskyi-portfolio.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ArslanPars/Ruslan-Cherniavskyi-portfolio/issues"
+  },
+  "homepage": "https://github.com/ArslanPars/Ruslan-Cherniavskyi-portfolio#readme",
+  "dependencies": {
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1"
+  }
+}
