@@ -1,95 +1,99 @@
-// gradient.js — WebGL smoke-like gradient animation
-// This script draws a blue-violet smoke simulation on a full‑screen canvas.
-(function(){
-  const canvas = document.getElementById('gradient-canvas');
-  if (!canvas) return;
-  const DPR = Math.max(1, Math.floor(window.devicePixelRatio || 1));
-  const gl = canvas.getContext('webgl', { alpha: true });
-  if (!gl) return;
+# Составим новый gradient.js на основе шейдеров из react_code
+vertex_shader_code = glsl_blocks[0]
+fragment_shader_code = glsl_blocks[1]
 
-  const vertSrc = `
-    attribute vec2 a_pos;
-    void main(){ gl_Position = vec4(a_pos, 0.0, 1.0); }
-  `;
-  const fragSrc = `
-    precision highp float;
-    uniform vec2 u_res;
-    uniform float u_time;
-    
-    float hash(vec2 p){
-      p = fract(p * vec2(123.34, 456.21));
-      p += dot(p, p + 45.32);
-      return fract(p.x * p.y);
-    }
-    float noise(vec2 p){
-      vec2 i = floor(p), f = fract(p);
-      float a = hash(i);
-      float b = hash(i + vec2(1.0, 0.0));
-      float c = hash(i + vec2(0.0, 1.0));
-      float d = hash(i + vec2(1.0, 1.0));
-      vec2 u = f*f*(3.0-2.0*f);
-      return mix(a,b,u.x) + (c-a)*u.y*(1.0-u.x) + (d-b)*u.x*u.y;
-    }
-    float fbm(vec2 p){
-      float v = 0.0, a = 0.5;
-      for(int i=0;i<6;i++){
-        v += a * noise(p);
-        p = mat2(1.6,1.2,-1.2,1.6)*p + 2.0;
-        a *= 0.5;
-      }
-      return v;
-    }
-    vec3 palette(float x){
-      vec3 c1 = vec3(0.0, 0.455, 0.569);
-      vec3 c2 = vec3(0.478, 0.039, 0.443);
-      x = smoothstep(0.2, 0.8, x);
-      return mix(c1, c2, x);
-    }
-    void main(){
-      vec2 uv = (gl_FragCoord.xy - 0.5 * u_res) / min(u_res.x, u_res.y);
-      float t = u_time * 0.05;
-      vec2 warp = vec2(fbm(uv*3.0 + t), fbm(uv*3.0 - t));
-      float n = fbm(uv*1.5 + warp*0.5 + t);
-      vec3 col = palette(n);
-      gl_FragColor = vec4(col, 1.0);
-    }
-  `;
-  function compile(type, src){
-    const sh = gl.createShader(type);
-    gl.shaderSource(sh, src);
-    gl.compileShader(sh);
-    return sh;
-  }
-  const vs = compile(gl.VERTEX_SHADER, vertSrc);
-  const fs = compile(gl.FRAGMENT_SHADER, fragSrc);
-  const prog = gl.createProgram();
-  gl.attachShader(prog, vs);
-  gl.attachShader(prog, fs);
-  gl.linkProgram(prog);
-  gl.useProgram(prog);
-  const buf = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-    -1,-1, 1,-1, -1,1,
-    -1,1, 1,-1, 1,1
-  ]), gl.STATIC_DRAW);
-  const loc = gl.getAttribLocation(prog, 'a_pos');
-  gl.enableVertexAttribArray(loc);
-  gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
-  const uRes = gl.getUniformLocation(prog, 'u_res');
-  const uTime = gl.getUniformLocation(prog, 'u_time');
-  function resize(){
-    canvas.width = window.innerWidth * DPR;
-    canvas.height = window.innerHeight * DPR;
-    gl.viewport(0, 0, canvas.width, canvas.height);
-    gl.uniform2f(uRes, canvas.width, canvas.height);
-  }
-  window.addEventListener('resize', resize);
-  resize();
-  const start = performance.now();
-  (function loop(now){
-    gl.uniform1f(uTime, (now - start) / 1000);
-    gl.drawArrays(gl.TRIANGLES, 0, 6);
-    requestAnimationFrame(loop);
-  })(performance.now());
-})();
+new_gradient_js = f"""
+(function() {{
+    const canvas = document.getElementById('gradient-canvas');
+    const gl = canvas.getContext('webgl');
+
+    if (!gl) {{
+        console.error('WebGL not supported');
+        return;
+    }}
+
+    function resizeCanvas() {{
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
+    }}
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    const vertexShaderSource = `{vertex_shader_code}`;
+    const fragmentShaderSource = `{fragment_shader_code}`;
+
+    function createShader(gl, type, source) {{
+        const shader = gl.createShader(type);
+        gl.shaderSource(shader, source);
+        gl.compileShader(shader);
+        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {{
+            console.error('Shader compile failed:', gl.getShaderInfoLog(shader));
+            gl.deleteShader(shader);
+            return null;
+        }}
+        return shader;
+    }}
+
+    function createProgram(gl, vertexShader, fragmentShader) {{
+        const program = gl.createProgram();
+        gl.attachShader(program, vertexShader);
+        gl.attachShader(program, fragmentShader);
+        gl.linkProgram(program);
+        if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {{
+            console.error('Program link failed:', gl.getProgramInfoLog(program));
+            gl.deleteProgram(program);
+            return null;
+        }}
+        return program;
+    }}
+
+    const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
+    const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
+    const program = createProgram(gl, vertexShader, fragmentShader);
+
+    const positionAttributeLocation = gl.getAttribLocation(program, 'a_position');
+    const positionBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+        -1, -1,
+         1, -1,
+        -1,  1,
+        -1,  1,
+         1, -1,
+         1,  1]), gl.STATIC_DRAW);
+
+    const vao = gl.createVertexArray();
+    gl.bindVertexArray(vao);
+    gl.enableVertexAttribArray(positionAttributeLocation);
+    gl.vertexAttribPointer(positionAttributeLocation, 2, gl.FLOAT, false, 0, 0);
+
+    const resolutionLocation = gl.getUniformLocation(program, 'u_resolution');
+    const timeLocation = gl.getUniformLocation(program, 'u_time');
+
+    let startTime = Date.now();
+
+    function render() {{
+        gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
+        gl.clear(gl.COLOR_BUFFER_BIT);
+
+        gl.useProgram(program);
+        gl.bindVertexArray(vao);
+
+        gl.uniform2f(resolutionLocation, gl.drawingBufferWidth, gl.drawingBufferHeight);
+        gl.uniform1f(timeLocation, (Date.now() - startTime) / 1000.0);
+
+        gl.drawArrays(gl.TRIANGLES, 0, 6);
+
+        requestAnimationFrame(render);
+    }}
+    requestAnimationFrame(render);
+}})();
+"""
+
+# Сохраним новый файл
+with open("/mnt/data/gradient_new.js", "w", encoding="utf-8") as f:
+    f.write(new_gradient_js)
+
+"/mnt/data/gradient_new.js"
+
