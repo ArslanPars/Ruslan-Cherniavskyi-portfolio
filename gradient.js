@@ -1,18 +1,11 @@
-import React, { useEffect, useRef } from "react";
-
 // GasBackground — fullscreen, aesthetic blue/purple gas with gentle turbulence.
-// Fixes:
-// 1) Robust shader compile/link checks BEFORE attachShader (prevents null attach).
-// 2) Corrected GLSL hash() to return a float (previously returned vec2 → compile fail).
-// 3) Removed TypeScript non-null assertions in runtime calls.
-// 4) Added lightweight runtime self-tests (console.assert) as "test cases".
-// 5) Graceful teardown & ResizeObserver fallback.
+// Без import/export — браузерный вариант под Babel + React CDN.
 
-export default function GasBackground() {
-  const canvasRef = useRef(null);
-  const rafRef = useRef(0);
+function GasBackground() {
+  const canvasRef = React.useRef(null);
+  const rafRef = React.useRef(0);
 
-  useEffect(() => {
+  React.useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -24,7 +17,6 @@ export default function GasBackground() {
       premultipliedAlpha: false,
       preserveDrawingBuffer: false,
     });
-
     if (!gl) {
       console.error("WebGL not supported: getContext('webgl') returned null");
       return;
@@ -45,10 +37,7 @@ export default function GasBackground() {
       uniform vec2 u_res;
       uniform float u_time;
 
-      // ---- Noise utilities ----
       float hash(vec2 p){
-        // Fixed: return a float, not a vec2
-        // Classic 2D hash via dot → sin → fract
         return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
       }
 
@@ -76,7 +65,6 @@ export default function GasBackground() {
       }
 
       vec3 palette(float t){
-        // Two-gas palette: indigo → violet-blue → airy cyan highlights
         vec3 c1 = vec3(0.14, 0.12, 0.23);
         vec3 c2 = vec3(0.20, 0.21, 0.52);
         vec3 c3 = vec3(0.48, 0.34, 0.74);
@@ -87,13 +75,9 @@ export default function GasBackground() {
       }
 
       void main(){
-        // Centered coords with aspect preserved via y
         vec2 p = (gl_FragCoord.xy - 0.5*u_res) / u_res.y;
-
-        // Slow drift
         float t = u_time * 0.06;
 
-        // Domain warp for gentle turbulence
         vec2 q = vec2(
           fbm(p*1.3 + vec2(t*0.9, -t*0.5)),
           fbm(p*1.3 + vec2(-t*0.6, t*0.7))
@@ -109,18 +93,14 @@ export default function GasBackground() {
 
         vec3 col = palette(v);
 
-        // Subtle vignetting for depth
         float vign = smoothstep(1.2, 0.2, length(p));
         col *= mix(0.9, 1.08, vign);
-
-        // Very light bloom-ish lift in brighter pockets
         col += 0.03 * pow(v, 3.0);
 
         gl_FragColor = vec4(col, 1.0);
       }
     `;
 
-    // --- Compile & link with guards ---
     const compile = (type, src, label) => {
       const sh = gl.createShader(type);
       if (!sh) {
@@ -136,10 +116,7 @@ export default function GasBackground() {
         gl.deleteShader(sh);
         return null;
       }
-      if (log.trim()) {
-        // Non-fatal warnings
-        console.debug(`${label} compile log:\n${log}`);
-      }
+      if (log.trim()) console.debug(`${label} compile log:\n${log}`);
       return sh;
     };
 
@@ -171,15 +148,14 @@ export default function GasBackground() {
     }
     gl.useProgram(prog);
 
-    // --- Full-screen triangle ---
+    // Full-screen triangle
     const buf = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, buf);
-    const tri = new Float32Array([
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
       -1, -1,
        3, -1,
       -1,  3,
-    ]);
-    gl.bufferData(gl.ARRAY_BUFFER, tri, gl.STATIC_DRAW);
+    ]), gl.STATIC_DRAW);
     const loc = gl.getAttribLocation(prog, "position");
     gl.enableVertexAttribArray(loc);
     gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
@@ -187,7 +163,6 @@ export default function GasBackground() {
     const uRes = gl.getUniformLocation(prog, "u_res");
     const uTime = gl.getUniformLocation(prog, "u_time");
 
-    // --- Basic runtime self-tests ("test cases") ---
     console.assert(gl instanceof WebGLRenderingContext, "[TEST] WebGL context acquired");
     console.assert(vs && fs, "[TEST] Shaders compiled");
     console.assert(linked, "[TEST] Program linked");
@@ -206,7 +181,6 @@ export default function GasBackground() {
       gl.viewport(0, 0, canvas.width, canvas.height);
     };
 
-    // Resize handling with fallback
     let obs;
     if ("ResizeObserver" in window) {
       obs = new ResizeObserver(() => setSize());
@@ -247,4 +221,13 @@ export default function GasBackground() {
       <canvas ref={canvasRef} className="w-full h-full block" />
     </div>
   );
+}
+
+// Монтируем компонент в контейнер <div id="gradient-canvas"></div>
+const rootNode = document.getElementById('gradient-canvas');
+if (rootNode) {
+  const root = ReactDOM.createRoot(rootNode);
+  root.render(<GasBackground />);
+} else {
+  console.error("No #gradient-canvas element found in DOM");
 }
