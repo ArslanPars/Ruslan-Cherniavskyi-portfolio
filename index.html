@@ -13,6 +13,8 @@
     <script type="module" src="app.js"></script>
 </head>
 <body>
+    <!-- Full-screen canvas for WebGL smoke simulation -->
+    <canvas id="gradient-canvas"></canvas>
     <!-- Navigation bar -->
     <nav>
         <div class="logo">RUSLAN • 3D</div>
@@ -27,6 +29,13 @@
     <!-- Hero section -->
     <header class="hero">
         <h1>Product visualisation<br>Hard‑Surface | CAD</h1>
+        <p>I turn your ideas into stunning visualizations</p>
+        <div class="hero-icons">
+            <a href="https://www.upwork.com/freelancers/ruslanchernianskiy" target="_blank" aria-label="UpWork"><i class="fa-brands fa-upwork"></i></a>
+            <a href="https://www.linkedin.com/in/ruslan-chernianskiy-6b772022a" target="_blank" aria-label="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
+            <a href="https://x.com/Chernianskiy" target="_blank" aria-label="X"><i class="fa-brands fa-x-twitter"></i></a>
+            <a href="https://www.artstation.com/chernianskiy" target="_blank" aria-label="ArtStation"><i class="fa-brands fa-artstation"></i></a>
+        </div>
         <button id="scroll-to-works" class="cta-button">View&nbsp;works</button>
     </header>
     <main>
@@ -45,12 +54,7 @@
         <section id="contact" class="contact-section">
             <h2>Contact</h2>
             <p>Let’s discuss your project! Get in touch via email: <a href="mailto:chernyavskyj@gmail.com">chernyavskyj@gmail.com</a>.</p>
-            <div class="contact-icons">
-              <a href="https://www.upwork.com/freelancers/ruslanchernianskiy" target="_blank" aria-label="UpWork"><i class="fa-brands fa-upwork"></i></a>
-              <a href="https://www.linkedin.com/in/ruslan-chernianskiy-6b772022a" target="_blank" aria-label="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
-              <a href="https://x.com/Chernianskiy" target="_blank" aria-label="X"><i class="fa-brands fa-x-twitter"></i></a>
-              <a href="https://www.artstation.com/chernianskiy" target="_blank" aria-label="ArtStation"><i class="fa-brands fa-artstation"></i></a>
-            </div>
+            <!-- Social icons are now displayed under the hero section -->
         </section>
     </main>
     <!-- Modal for 3D viewer -->
@@ -74,5 +78,6 @@
             <div id="viewer-container" class="viewer"></div>
         </div>
     </div>
+    <script type="module" src="gradient.js"></script>
 </body>
 </html>

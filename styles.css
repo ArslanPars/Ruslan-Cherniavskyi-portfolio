@@ -11,26 +11,9 @@
 }
 
 /* Gradient gas background using pseudo-element */
+/* Previously used CSS gradient is disabled in favor of a WebGL-based background */
 body::before {
-    content: "";
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    /* Combine radial gradients for a nebulous effect and a dark base gradient */
-    background:
-      radial-gradient(circle at 30% 30%, rgba(94, 234, 212, 0.3) 0%, transparent 60%),
-      radial-gradient(circle at 70% 70%, rgba(96, 165, 250, 0.4) 0%, transparent 60%),
-      linear-gradient(135deg, rgba(14, 15, 18, 1) 0%, rgba(20, 22, 28, 1) 100%);
-    filter: blur(80px);
-    z-index: -1;
-    animation: moveBackground 30s linear infinite;
-}
-@keyframes moveBackground {
-    0% { transform: translate(0, 0); }
-    50% { transform: translate(-50%, -50%); }
-    100% { transform: translate(0, 0); }
+    display: none;
 }
 * {
     box-sizing: border-box;
@@ -258,6 +241,33 @@ nav .nav-links a:hover {
 }
 .project-details input[type="range"] {
     width: 100%;
+}
+
+/* Full-screen gradient canvas for WebGL smoke simulation */
+#gradient-canvas {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* Icons below hero heading */
+.hero-icons {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    margin: 1.5rem 0;
+}
+.hero-icons a {
+    color: var(--accent);
+    font-size: 2rem;
+    transition: color 0.2s;
+}
+.hero-icons a:hover {
+    color: var(--accent-cold);
 }
 /* Modal */
 .modal {
