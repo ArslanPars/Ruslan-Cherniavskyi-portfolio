@@ -51,7 +51,7 @@
 3. Через несколько минут сайт будет доступен по адресу:
 
    ```
-   https://<ваш_логин>.github.io/<название_репозитория>/
+   https://arslanpars.github.io/Ruslan-Cherniavskyi-portfolio/index.html
    ```
 
 ## Управление и кастомизация сайта
