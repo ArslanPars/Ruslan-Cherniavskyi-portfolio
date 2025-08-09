@@ -2,25 +2,53 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ruslan Cherniavskyi Portfolio</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Ruslan Cherniavskyi — 3D</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Import custom fonts: Space Grotesk for headings and Inter for body text -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-    <!-- Load Three.js and viewer script -->
     <script type="module" src="app.js"></script>
 </head>
 <body>
-    <header>
-        <h1>Ruslan Cherniavskyi Portfolio</h1>
-        <p>Интерактивная галерея 3D‑работ</p>
+    <!-- Navigation bar -->
+    <nav>
+        <div class="logo">RUSLAN • 3D</div>
+        <ul class="nav-links">
+            <li><a href="#works">Работы</a></li>
+            <li><a href="#about">Обо мне</a></li>
+            <li><a href="#contact">Контакты</a></li>
+        </ul>
+    </nav>
+    <!-- Hero section -->
+    <header class="hero">
+        <h1>Product visualisation<br>Hard‑Surface | CAD</h1>
+        <p>Я превращаю инженерные модели в впечатляющие визуализации</p>
+        <button id="scroll-to-works" class="cta-button">Смотреть работы</button>
     </header>
     <main>
-        <section id="gallery" class="gallery"></section>
+        <!-- Works section -->
+        <section id="works" class="works-section">
+            <h2>Работы</h2>
+            <div id="filters" class="filters"></div>
+            <div id="gallery" class="gallery"></div>
+        </section>
+        <!-- About section -->
+        <section id="about" class="about-section">
+            <h2>Обо мне</h2>
+            <p>Привет! Я Руслан, 3D‑художник и инженер с магистром по компьютерной инженерии. Я специализируюсь на создании высококачественных визуализаций для продуктов, CAD‑моделей и hard‑surface объектов.</p>
+        </section>
+        <!-- Contact section -->
+        <section id="contact" class="contact-section">
+            <h2>Контакты</h2>
+            <p>Давайте обсудим ваш проект! Свяжитесь со мной по электронной почте: <a href="mailto:chernyavskyj@gmail.com">chernyavskyj@gmail.com</a>.</p>
+        </section>
     </main>
-
     <!-- Modal for 3D viewer -->
     <div id="viewer-modal" class="modal hidden">
         <div class="modal-content">
-            <button class="close-button" aria-label="Close viewer">&times;</button>
+            <button class="close-button" aria-label="Закрыть">&times;</button>
             <div class="viewer-controls">
                 <label>
                     HDRI:
@@ -28,7 +56,7 @@
                 </label>
                 <label>
                     <input type="checkbox" id="wireframe-toggle">
-                    Полигональна сетка
+                    Wireframe
                 </label>
                 <label>
                     <input type="checkbox" id="material-toggle">
