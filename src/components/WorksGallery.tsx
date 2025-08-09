@@ -9,15 +9,18 @@ const StyledContainer = styled(Container)(({ theme }) => ({
 }));
 
 const GalleryGrid = styled(Stack)(({ theme }) => ({
-  display: 'grid',
-  gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-  gap: '1.5rem',
+  display: 'flex',
+  flexWrap: 'wrap',
+  gap: '2rem',
   marginTop: '2rem',
-  [theme.breakpoints.up('sm')]: {
-    gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
+  justifyContent: 'center',
+  alignItems: 'flex-start',
+  [theme.breakpoints.down('sm')]: {
+    gap: '1rem',
+    justifyContent: 'center',
   },
-  [theme.breakpoints.up('lg')]: {
-    gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))',
+  [theme.breakpoints.up('md')]: {
+    justifyContent: 'flex-start',
   },
 }));
 
@@ -42,15 +45,15 @@ const worksData: Work[] = [
     id: 'perfume',
     title: 'Pure Dreamer',
     subtitle: 'Product visualisation · Blender · CAD',
-    coverImage: 'https://images.unsplash.com/photo-1610300011228-aa944f03af23?w=400&h=240&fit=crop&crop=center',
-    href: 'assets/works/perfume.html',
+    coverImage: 'https://images.unsplash.com/photo-1610300011228-aa944f03af23?w=500&h=380&fit=crop&crop=center',
+    href: './assets/works/perfume.html',
   },
   {
     id: 'loreal',
     title: "L'Oréal Paris Visualization",
     subtitle: 'Product visualisation · Blender · CAD',
-    coverImage: 'https://images.unsplash.com/photo-1739961530627-4ca0bb400ace?w=400&h=240&fit=crop&crop=center',
-    href: 'assets/works/loreal.html',
+    coverImage: 'https://images.unsplash.com/photo-1739961530627-4ca0bb400ace?w=500&h=380&fit=crop&crop=center',
+    href: './assets/works/loreal.html',
   },
 ];
 

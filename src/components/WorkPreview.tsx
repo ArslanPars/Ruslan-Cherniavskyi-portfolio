@@ -11,7 +11,9 @@ const StyledCard = styled(Card)(({ theme }) => ({
   border: '1px solid rgba(255, 255, 255, 0.1)',
   cursor: 'pointer',
   transition: 'all 0.3s ease',
-  height: '320px',
+  width: '500px',
+  height: '500px',
+  flexShrink: 0,
   '&:hover': {
     transform: 'translateY(-4px)',
     border: '1px solid rgba(255, 255, 255, 0.2)',
@@ -24,7 +26,7 @@ const StyledCard = styled(Card)(({ theme }) => ({
 const ImageContainer = styled(Box)({
   position: 'relative',
   width: '100%',
-  height: '240px',
+  height: '380px',
   overflow: 'hidden',
   backgroundColor: '#1a1a1a',
 });
@@ -64,8 +66,12 @@ const ContentOverlay = styled(CardContent)({
   left: 0,
   right: 0,
   color: 'white',
-  padding: '16px 20px',
+  padding: '24px 28px',
   zIndex: 2,
+  height: '120px',
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'flex-end',
 });
 
 interface WorkPreviewProps {
@@ -90,7 +96,10 @@ const WorkPreview: React.FC<WorkPreviewProps> = ({
     if (onClick) {
       onClick();
     } else {
-      window.open(href, '_blank');
+      // For GitHub Pages, use relative path navigation
+      const baseUrl = window.location.origin + window.location.pathname.replace(/\/[^\/]*$/, '/');
+      const fullUrl = href.startsWith('http') ? href : baseUrl + href;
+      window.open(fullUrl, '_blank');
     }
   };
 
@@ -149,22 +158,24 @@ const WorkPreview: React.FC<WorkPreviewProps> = ({
       <GradientOverlay />
       <ContentOverlay>
         <Typography
-          variant="h6"
+          variant="h5"
           component="h3"
           sx={{
             fontFamily: 'Space Grotesk, sans-serif',
             fontWeight: 600,
-            fontSize: { xs: '1.1rem', sm: '1.25rem' },
-            mb: 0.5,
+            fontSize: '1.5rem',
+            mb: 1,
+            lineHeight: 1.2,
           }}
         >
           {title}
         </Typography>
         <Typography
-          variant="body2"
+          variant="body1"
           sx={{
             color: 'rgba(255, 255, 255, 0.8)',
-            fontSize: '0.875rem',
+            fontSize: '1rem',
+            lineHeight: 1.4,
           }}
         >
           {subtitle}
