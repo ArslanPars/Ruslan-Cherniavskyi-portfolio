@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CAD Models — Ruslan Cherniavskyi</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="../styles.css">
+    <script type="module" src="cad.js"></script>
+</head>
+<body>
+    <!-- Navigation bar -->
+    <nav>
+        <div class="logo">RUSLAN • 3D</div>
+        <ul class="nav-links">
+            <li><a href="../index.html#works">Works</a></li>
+            <li><a href="../index.html#about">About</a></li>
+            <li><a href="../index.html#contact">Contact</a></li>
+            <li><a href="common.html">Models</a></li>
+            <li><a href="cad.html" class="active">CAD Models</a></li>
+        </ul>
+    </nav>
+    <main class="project-page">
+        <h1>CAD Models</h1>
+        <div class="project-container">
+            <div id="viewer" class="project-viewer"></div>
+            <div class="project-details">
+                <p>This page is intended for CAD models. Use the controls below to adjust the clipping plane and inspect the interior of the model.</p>
+                <div class="controls">
+                    <label>
+                        Axis:
+                        <select id="axis-select">
+                            <option value="x">X</option>
+                            <option value="y">Y</option>
+                            <option value="z">Z</option>
+                        </select>
+                    </label>
+                    <label>
+                        Position:
+                        <input type="range" id="plane-range" min="-1" max="1" step="0.01" value="0">
+                    </label>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
