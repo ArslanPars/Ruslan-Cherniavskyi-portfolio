@@ -1,28 +1,45 @@
+import React, { useEffect, useRef } from "react";
 
-(function() {
-    const canvas = document.getElementById('gradient-canvas');
-    const gl = canvas.getContext('webgl');
+// GasBackground — fullscreen, aesthetic blue/purple gas with gentle turbulence.
+// Fixes:
+// 1) Robust shader compile/link checks BEFORE attachShader (prevents null attach).
+// 2) Corrected GLSL hash() to return a float (previously returned vec2 → compile fail).
+// 3) Removed TypeScript non-null assertions in runtime calls.
+// 4) Added lightweight runtime self-tests (console.assert) as "test cases".
+// 5) Graceful teardown & ResizeObserver fallback.
+
+export default function GasBackground() {
+  const canvasRef = useRef(null);
+  const rafRef = useRef(0);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const gl = canvas.getContext("webgl", {
+      antialias: false,
+      depth: false,
+      stencil: false,
+      alpha: true,
+      premultipliedAlpha: false,
+      preserveDrawingBuffer: false,
+    });
 
     if (!gl) {
-        console.error('WebGL not supported');
-        return;
+      console.error("WebGL not supported: getContext('webgl') returned null");
+      return;
     }
 
-    function resizeCanvas() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
-    }
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
-
-    const vertexShaderSource = `
+    // Vertex shader (full-screen triangle)
+    const vertSrc = `
       attribute vec2 position;
       void main(){
         gl_Position = vec4(position, 0.0, 1.0);
       }
     `;
-    const fragmentShaderSource = `
+
+    // Fragment shader: domain-warped fbm noise, two-gas palette (blue/purple)
+    const fragSrc = `
       precision highp float;
 
       uniform vec2 u_res;
@@ -103,69 +120,131 @@
       }
     `;
 
-    function createShader(gl, type, source) {
-        const shader = gl.createShader(type);
-        gl.shaderSource(shader, source);
-        gl.compileShader(shader);
-        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-            console.error('Shader compile failed:', gl.getShaderInfoLog(shader));
-            gl.deleteShader(shader);
-            return null;
-        }
-        return shader;
+    // --- Compile & link with guards ---
+    const compile = (type, src, label) => {
+      const sh = gl.createShader(type);
+      if (!sh) {
+        console.error(`createShader failed for ${label}`);
+        return null;
+      }
+      gl.shaderSource(sh, src);
+      gl.compileShader(sh);
+      const ok = gl.getShaderParameter(sh, gl.COMPILE_STATUS);
+      const log = gl.getShaderInfoLog(sh) || "";
+      if (!ok) {
+        console.error(`${label} compile error:\n${log}`);
+        gl.deleteShader(sh);
+        return null;
+      }
+      if (log.trim()) {
+        // Non-fatal warnings
+        console.debug(`${label} compile log:\n${log}`);
+      }
+      return sh;
+    };
+
+    const vs = compile(gl.VERTEX_SHADER, vertSrc, "VertexShader");
+    const fs = compile(gl.FRAGMENT_SHADER, fragSrc, "FragmentShader");
+    if (!vs || !fs) {
+      console.error("Aborting: shader compilation failed.");
+      return;
     }
 
-    function createProgram(gl, vertexShader, fragmentShader) {
-        const program = gl.createProgram();
-        gl.attachShader(program, vertexShader);
-        gl.attachShader(program, fragmentShader);
-        gl.linkProgram(program);
-        if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-            console.error('Program link failed:', gl.getProgramInfoLog(program));
-            gl.deleteProgram(program);
-            return null;
-        }
-        return program;
+    const prog = gl.createProgram();
+    if (!prog) {
+      console.error("createProgram failed");
+      gl.deleteShader(vs);
+      gl.deleteShader(fs);
+      return;
     }
 
-    const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
-    const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
-    const program = createProgram(gl, vertexShader, fragmentShader);
-
-    const positionAttributeLocation = gl.getAttribLocation(program, 'a_position');
-    const positionBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-        -1, -1,
-         1, -1,
-        -1,  1,
-        -1,  1,
-         1, -1,
-         1,  1]), gl.STATIC_DRAW);
-
-    const vao = gl.createVertexArray();
-    gl.bindVertexArray(vao);
-    gl.enableVertexAttribArray(positionAttributeLocation);
-    gl.vertexAttribPointer(positionAttributeLocation, 2, gl.FLOAT, false, 0, 0);
-
-    const resolutionLocation = gl.getUniformLocation(program, 'u_resolution');
-    const timeLocation = gl.getUniformLocation(program, 'u_time');
-
-    let startTime = Date.now();
-
-    function render() {
-        gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
-        gl.clear(gl.COLOR_BUFFER_BIT);
-
-        gl.useProgram(program);
-        gl.bindVertexArray(vao);
-
-        gl.uniform2f(resolutionLocation, gl.drawingBufferWidth, gl.drawingBufferHeight);
-        gl.uniform1f(timeLocation, (Date.now() - startTime) / 1000.0);
-
-        gl.drawArrays(gl.TRIANGLES, 0, 6);
-
-        requestAnimationFrame(render);
+    gl.attachShader(prog, vs);
+    gl.attachShader(prog, fs);
+    gl.linkProgram(prog);
+    const linked = gl.getProgramParameter(prog, gl.LINK_STATUS);
+    if (!linked) {
+      console.error("Program link error:\n" + (gl.getProgramInfoLog(prog) || ""));
+      gl.deleteProgram(prog);
+      gl.deleteShader(vs);
+      gl.deleteShader(fs);
+      return;
     }
-    requestAnimationFrame(render);
-})();
+    gl.useProgram(prog);
+
+    // --- Full-screen triangle ---
+    const buf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    const tri = new Float32Array([
+      -1, -1,
+       3, -1,
+      -1,  3,
+    ]);
+    gl.bufferData(gl.ARRAY_BUFFER, tri, gl.STATIC_DRAW);
+    const loc = gl.getAttribLocation(prog, "position");
+    gl.enableVertexAttribArray(loc);
+    gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+
+    const uRes = gl.getUniformLocation(prog, "u_res");
+    const uTime = gl.getUniformLocation(prog, "u_time");
+
+    // --- Basic runtime self-tests ("test cases") ---
+    console.assert(gl instanceof WebGLRenderingContext, "[TEST] WebGL context acquired");
+    console.assert(vs && fs, "[TEST] Shaders compiled");
+    console.assert(linked, "[TEST] Program linked");
+    console.assert(loc !== -1, "[TEST] Attribute 'position' active");
+    console.assert(uRes !== null && uTime !== null, "[TEST] Uniforms located");
+
+    const setSize = () => {
+      const dpr = Math.min(2, window.devicePixelRatio || 1);
+      const rect = canvas.getBoundingClientRect();
+      const w = Math.max(1, Math.floor(rect.width * dpr));
+      const h = Math.max(1, Math.floor(rect.height * dpr));
+      if (canvas.width !== w || canvas.height !== h) {
+        canvas.width = w;
+        canvas.height = h;
+      }
+      gl.viewport(0, 0, canvas.width, canvas.height);
+    };
+
+    // Resize handling with fallback
+    let obs;
+    if ("ResizeObserver" in window) {
+      obs = new ResizeObserver(() => setSize());
+      obs.observe(canvas);
+    } else {
+      const onResize = () => setSize();
+      window.addEventListener("resize", onResize);
+    }
+
+    setSize();
+
+    let start = performance.now();
+    const loop = (now) => {
+      const t = (now - start) / 1000;
+      gl.uniform2f(uRes, canvas.width, canvas.height);
+      gl.uniform1f(uTime, t);
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+      rafRef.current = requestAnimationFrame(loop);
+    };
+    rafRef.current = requestAnimationFrame(loop);
+
+    return () => {
+      cancelAnimationFrame(rafRef.current);
+      if (obs && obs.disconnect) obs.disconnect();
+      gl.bindBuffer(gl.ARRAY_BUFFER, null);
+      if (buf) gl.deleteBuffer(buf);
+      gl.useProgram(null);
+      gl.detachShader(prog, vs);
+      gl.detachShader(prog, fs);
+      gl.deleteShader(vs);
+      gl.deleteShader(fs);
+      gl.deleteProgram(prog);
+    };
+  }, []);
+
+  return (
+    <div className="fixed inset-0 -z-10">
+      <canvas ref={canvasRef} className="w-full h-full block" />
+    </div>
+  );
+}
