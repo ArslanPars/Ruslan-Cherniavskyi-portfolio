@@ -1,6 +1,20 @@
 {
-  "title": "Название работы",
-  "model": "assets/models/my-model.glb",
-  "thumb": "assets/thumbs/my-model.jpg",
-  "hdris": ["studio_small_08_1k.hdr", "venice_sunset_1k.hdr"]
+  "items": [
+    {
+      "title": "RS1 Tire – Racing Spec",
+      "subtitle": "Hard-surface / Product Viz",
+      "model": "assets/models/rs1-tire.glb",
+      "thumb": "assets/thumbs/rs1-tire.jpg",
+      "tags": ["Product Viz", "Hard-Surface"],
+      "hdris": ["studio_small_08_1k.hdr", "venice_sunset_1k.hdr"]
+    },
+    {
+      "title": "Prong Ring – CAD to Viz",
+      "subtitle": "Jewelry / CAD",
+      "model": "assets/models/prong-ring.glb",
+      "thumb": "assets/thumbs/prong-ring.jpg",
+      "tags": ["Jewelry", "CAD"],
+      "hdris": ["studio_small_08_1k.hdr", "venice_sunset_1k.hdr"]
+    }
+  ]
 }
