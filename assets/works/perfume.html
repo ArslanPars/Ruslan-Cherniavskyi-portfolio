@@ -6,14 +6,13 @@
   <title>Pure Dreamer — Ruslan Cherniavskyi</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-[#0b0b12] text-white">
-  <header class="max-w-6xl mx-auto px-6 sm:px-8 py-6 flex justify-between">
+<body class="bg-[#0b0b12] text-white selection:bg-fuchsia-400/30">
+  <header class="max-w-6xl mx-auto px-6 sm:px-8 py-6 flex items-center justify-between">
     <a href="/" class="text-lg font-semibold tracking-tight">Ruslan Cherniavskyi</a>
     <nav class="text-sm text-white/80">
       <a href="/" class="hover:text-white">Home</a>
     </nav>
   </header>
-
   <main class="max-w-6xl mx-auto px-6 sm:px-8 pb-24">
     <section class="py-6">
       <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight mb-4">Pure Dreamer</h1>
@@ -30,16 +29,12 @@
       <div id="grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
     </section>
   </main>
-
   <div id="lightbox" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 p-4">
-    <button id="closeLb" class="absolute top-4 right-4 rounded-xl bg-white/10 px-3 py-2 hover:bg-white/20">
-      Close
-    </button>
+    <button id="closeLb" class="absolute top-4 right-4 rounded-xl bg-white/10 px-3 py-2 hover:bg-white/20">Close</button>
     <img id="lbImg" src="" alt="preview" class="max-h-[88vh] max-w-[90vw] rounded-2xl ring-1 ring-white/10" />
-    <button id="prev" class="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 px-3 py-2 bg-white/10 rounded-lg hover:bg-white/20">‹</button>
-    <button id="next" class="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 px-3 py-2 bg-white/10 rounded-lg hover:bg-white/20">›</button>
+    <button id="prev" class="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 px-3 py-2 bg-white/10 rounded-lg hover:bg-white/20">&#8249;</button>
+    <button id="next" class="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 px-3 py-2 bg-white/10 rounded-lg hover:bg-white/20">&#8250;</button>
   </div>
-
   <script>
     const images = [
       "/assets/works/perfume/01.jpg",
@@ -51,43 +46,44 @@
       const a = document.createElement('a');
       a.href = src;
       a.className = "group block overflow-hidden rounded-2xl ring-1 ring-white/10 hover:ring-white/20";
-      a.innerHTML = `
-        <img src="${src}" alt="render ${i+1}" loading="lazy"
-             class="h-64 w-full object-cover transition duration-500 group-hover:scale-105"/>
-      `;
+      a.innerHTML = '<img src="' + src + '" alt="render ' + (i + 1) + '" loading="lazy" class="h-64 w-full object-cover transition duration-500 group-hover:scale-105"/>';
       a.addEventListener('click', (e) => {
         e.preventDefault();
         openLightbox(i);
       });
       grid.appendChild(a);
     });
-
     const lb = document.getElementById('lightbox');
     const lbImg = document.getElementById('lbImg');
     const closeLb = document.getElementById('closeLb');
     const prev = document.getElementById('prev');
     const next = document.getElementById('next');
     let idx = 0;
-    function openLightbox(i){
+    function openLightbox(i) {
       idx = i;
       lbImg.src = images[idx];
       lb.classList.remove('hidden');
       lb.classList.add('flex');
     }
-    function closeLightbox(){ lb.classList.add('hidden'); lb.classList.remove('flex'); }
-    function show(delta){
+    function closeLightbox() {
+      lb.classList.add('hidden');
+      lb.classList.remove('flex');
+    }
+    function show(delta) {
       idx = (idx + delta + images.length) % images.length;
       lbImg.src = images[idx];
     }
     closeLb.addEventListener('click', closeLightbox);
     prev.addEventListener('click', () => show(-1));
     next.addEventListener('click', () => show(1));
-    lb.addEventListener('click', (e) => { if(e.target === lb) closeLightbox(); });
+    lb.addEventListener('click', (e) => {
+      if (e.target === lb) closeLightbox();
+    });
     window.addEventListener('keydown', (e) => {
-      if(lb.classList.contains('hidden')) return;
-      if(e.key === 'Escape') closeLightbox();
-      if(e.key === 'ArrowLeft') show(-1);
-      if(e.key === 'ArrowRight') show(1);
+      if (lb.classList.contains('hidden')) return;
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowLeft') show(-1);
+      if (e.key === 'ArrowRight') show(1);
     });
   </script>
 </body>

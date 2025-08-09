@@ -1,5 +1,5 @@
-// GasBackground — fullscreen, aesthetic blue/purple gas with gentle turbulence.
-// Без import/export — браузерный вариант под Babel + React CDN.
+// gradient.js — React wrapper around GasBackground shader animation.
+// This file mounts a React component that draws a WebGL gas effect on a full-screen canvas.
 
 function GasBackground() {
   const canvasRef = React.useRef(null);
@@ -37,6 +37,7 @@ function GasBackground() {
       uniform vec2 u_res;
       uniform float u_time;
 
+      // ---- Noise utilities ----
       float hash(vec2 p){
         return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
       }
@@ -77,7 +78,6 @@ function GasBackground() {
       void main(){
         vec2 p = (gl_FragCoord.xy - 0.5*u_res) / u_res.y;
         float t = u_time * 0.06;
-
         vec2 q = vec2(
           fbm(p*1.3 + vec2(t*0.9, -t*0.5)),
           fbm(p*1.3 + vec2(-t*0.6, t*0.7))
@@ -86,21 +86,18 @@ function GasBackground() {
           fbm(p*2.1 + 2.0*q + vec2(t*0.2, -t*0.1)),
           fbm(p*2.1 + 2.0*q + vec2(-t*0.15, t*0.25))
         );
-
         float n = fbm(p*2.2 + 1.5*r);
         float n2 = fbm(p*0.9 - 0.8*q + vec2(0.0, t*0.3));
         float v = smoothstep(0.2, 0.9, 0.55*n + 0.45*n2);
-
         vec3 col = palette(v);
-
         float vign = smoothstep(1.2, 0.2, length(p));
         col *= mix(0.9, 1.08, vign);
         col += 0.03 * pow(v, 3.0);
-
         gl_FragColor = vec4(col, 1.0);
       }
     `;
 
+    // --- Compile & link with guards ---
     const compile = (type, src, label) => {
       const sh = gl.createShader(type);
       if (!sh) {
@@ -116,7 +113,9 @@ function GasBackground() {
         gl.deleteShader(sh);
         return null;
       }
-      if (log.trim()) console.debug(`${label} compile log:\n${log}`);
+      if (log.trim()) {
+        console.debug(`${label} compile log:\n${log}`);
+      }
       return sh;
     };
 
@@ -148,7 +147,7 @@ function GasBackground() {
     }
     gl.useProgram(prog);
 
-    // Full-screen triangle
+    // Full-screen triangle (three vertices)
     const buf = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, buf);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
@@ -162,12 +161,6 @@ function GasBackground() {
 
     const uRes = gl.getUniformLocation(prog, "u_res");
     const uTime = gl.getUniformLocation(prog, "u_time");
-
-    console.assert(gl instanceof WebGLRenderingContext, "[TEST] WebGL context acquired");
-    console.assert(vs && fs, "[TEST] Shaders compiled");
-    console.assert(linked, "[TEST] Program linked");
-    console.assert(loc !== -1, "[TEST] Attribute 'position' active");
-    console.assert(uRes !== null && uTime !== null, "[TEST] Uniforms located");
 
     const setSize = () => {
       const dpr = Math.min(2, window.devicePixelRatio || 1);
@@ -186,8 +179,7 @@ function GasBackground() {
       obs = new ResizeObserver(() => setSize());
       obs.observe(canvas);
     } else {
-      const onResize = () => setSize();
-      window.addEventListener("resize", onResize);
+      window.addEventListener("resize", setSize);
     }
 
     setSize();
@@ -202,6 +194,7 @@ function GasBackground() {
     };
     rafRef.current = requestAnimationFrame(loop);
 
+    // Cleanup on unmount
     return () => {
       cancelAnimationFrame(rafRef.current);
       if (obs && obs.disconnect) obs.disconnect();
@@ -216,6 +209,7 @@ function GasBackground() {
     };
   }, []);
 
+  // Render a container with a canvas inside
   return (
     <div className="fixed inset-0 -z-10">
       <canvas ref={canvasRef} className="w-full h-full block" />
@@ -223,10 +217,10 @@ function GasBackground() {
   );
 }
 
-// Монтируем компонент в контейнер <div id="gradient-canvas"></div>
-const rootNode = document.getElementById('gradient-canvas');
-if (rootNode) {
-  const root = ReactDOM.createRoot(rootNode);
+// Mount the component into the #gradient-canvas container
+const container = document.getElementById('gradient-canvas');
+if (container) {
+  const root = ReactDOM.createRoot(container);
   root.render(<GasBackground />);
 } else {
   console.error("No #gradient-canvas element found in DOM");
