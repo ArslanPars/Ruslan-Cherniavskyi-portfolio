@@ -40,8 +40,8 @@
       return v;
     }
     vec3 palette(float x){
-      vec3 c1 = vec3(0.1, 0.6, 0.8);
-      vec3 c2 = vec3(0.6, 0.3, 0.8);
+      vec3 c1 = vec3(0.0, 0.455, 0.569);
+      vec3 c2 = vec3(0.278, 0.078, 0.263);
       x = smoothstep(0.2, 0.8, x);
       return mix(c1, c2, x);
     }
