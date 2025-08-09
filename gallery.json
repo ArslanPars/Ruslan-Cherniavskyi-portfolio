@@ -1,0 +1,6 @@
+{
+  "title": "Название работы",
+  "model": "assets/models/my-model.glb",
+  "thumb": "assets/thumbs/my-model.jpg",
+  "hdris": ["studio_small_08_1k.hdr", "venice_sunset_1k.hdr"]
+}
