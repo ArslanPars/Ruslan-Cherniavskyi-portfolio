@@ -9,6 +9,29 @@
     --accent-cold: #60a5fa;
     --radius: 1rem;
 }
+
+/* Gradient gas background using pseudo-element */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* Combine radial gradients for a nebulous effect and a dark base gradient */
+    background:
+      radial-gradient(circle at 30% 30%, rgba(94, 234, 212, 0.3) 0%, transparent 60%),
+      radial-gradient(circle at 70% 70%, rgba(96, 165, 250, 0.4) 0%, transparent 60%),
+      linear-gradient(135deg, rgba(14, 15, 18, 1) 0%, rgba(20, 22, 28, 1) 100%);
+    filter: blur(80px);
+    z-index: -1;
+    animation: moveBackground 30s linear infinite;
+}
+@keyframes moveBackground {
+    0% { transform: translate(0, 0); }
+    50% { transform: translate(-50%, -50%); }
+    100% { transform: translate(0, 0); }
+}
 * {
     box-sizing: border-box;
 }
@@ -179,6 +202,62 @@ nav .nav-links a:hover {
     font-size: 1rem;
     color: var(--muted);
     line-height: 1.6;
+}
+
+/* Contact icons row */
+.contact-icons {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    margin-top: 1.5rem;
+}
+.contact-icons a {
+    color: var(--accent);
+    font-size: 1.8rem;
+    transition: color 0.2s;
+}
+.contact-icons a:hover {
+    color: var(--accent-cold);
+}
+
+/* Project page layout */
+.project-page {
+    padding: 4rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+.project-page h1 {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+}
+.project-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+}
+.project-viewer {
+    flex: 1 1 60%;
+    min-height: 400px;
+    background-color: #000;
+}
+.project-details {
+    flex: 1 1 35%;
+    color: var(--muted);
+    font-size: 1rem;
+}
+.project-details .controls {
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+.project-details label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.project-details input[type="range"] {
+    width: 100%;
 }
 /* Modal */
 .modal {
