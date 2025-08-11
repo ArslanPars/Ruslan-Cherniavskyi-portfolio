@@ -11,6 +11,7 @@ const filtersEl = document.getElementById('filters');
 const modalEl = document.getElementById('viewer-modal');
 const closeButton = modalEl.querySelector('.close-button');
 const viewerContainer = document.getElementById('viewer-container');
+const modalGalleryContainer = document.getElementById('modal-gallery-container');
 const hdriSelect = document.getElementById('hdri-select');
 const wireframeToggle = document.getElementById('wireframe-toggle');
 const materialToggle = document.getElementById('material-toggle');
@@ -24,6 +25,7 @@ let environmentMaps = [
 let scene, camera, renderer, controls;
 let currentModel;
 let originalMaterials = [];
+let lightboxEl = null;
 
 // Smooth scroll to works section
 if (scrollButton) {
@@ -99,6 +101,55 @@ function renderGallery(list) {
     galleryEl.appendChild(card);
   });
 }
+
+// Lightbox functions
+function openLightbox(images, index) {
+    if (lightboxEl) {
+        document.body.removeChild(lightboxEl);
+    }
+
+    lightboxEl = document.createElement('div');
+    lightboxEl.className = 'modal';
+    lightboxEl.style.zIndex = '1001';
+
+    let currentIndex = index;
+
+    function updateImage() {
+        lightboxEl.innerHTML = `
+            <div class="modal-content" style="background: transparent; max-width: 90vw; max-height: 90vh;">
+                <button class="close-button" style="position: absolute; top: 0; right: 0;">&times;</button>
+                <img src="${images[currentIndex]}" style="max-height: 90vh; max-width: 90vw; object-fit: contain;">
+                ${images.length > 1 ? `
+                    <button class="prev-button" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%);">&lt;</button>
+                    <button class="next-button" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%);">&gt;</button>
+                ` : ''}
+            </div>
+        `;
+
+        lightboxEl.querySelector('.close-button').addEventListener('click', closeLightbox);
+        if (images.length > 1) {
+            lightboxEl.querySelector('.prev-button').addEventListener('click', () => {
+                currentIndex = (currentIndex - 1 + images.length) % images.length;
+                updateImage();
+            });
+            lightboxEl.querySelector('.next-button').addEventListener('click', () => {
+                currentIndex = (currentIndex + 1) % images.length;
+                updateImage();
+            });
+        }
+    }
+
+    updateImage();
+    document.body.appendChild(lightboxEl);
+}
+
+function closeLightbox() {
+    if (lightboxEl) {
+        document.body.removeChild(lightboxEl);
+        lightboxEl = null;
+    }
+}
+
 
 // 3D viewer functions
 function initRenderer() {
@@ -258,6 +309,18 @@ async function openModal(item) {
   }
   await loadModel(item);
   animate();
+
+  // Populate modal gallery
+  modalGalleryContainer.innerHTML = '';
+  if (item.gallery && item.gallery.length > 0) {
+      item.gallery.forEach((imgSrc, index) => {
+          const img = document.createElement('img');
+          img.src = imgSrc;
+          img.alt = `Gallery image ${index + 1}`;
+          img.addEventListener('click', () => openLightbox(item.gallery, index));
+          modalGalleryContainer.appendChild(img);
+      });
+  }
 }
 function closeModal() {
   modalEl.classList.add('hidden');
@@ -278,6 +341,8 @@ function closeModal() {
   camera = null;
   controls = null;
   viewerContainer.innerHTML = '';
+  modalGalleryContainer.innerHTML = '';
+  closeLightbox();
 }
 
 closeButton.addEventListener('click', closeModal);

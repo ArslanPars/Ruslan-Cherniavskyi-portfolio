@@ -6,7 +6,8 @@
       "model": "assets/models/rs1-tire.glb",
       "thumb": "assets/thumbs/rs1-tire.jpg",
       "tags": ["Product Viz", "Hard-Surface"],
-      "hdris": ["studio_small_08_1k.hdr", "venice_sunset_1k.hdr"]
+      "hdris": ["studio_small_08_1k.hdr", "venice_sunset_1k.hdr"],
+      "gallery": ["assets/thumbs/rs1-tire.jpg"]
     },
     {
       "title": "Prong Ring – CAD to Viz",
@@ -14,7 +15,8 @@
       "model": "assets/models/prong-ring.glb",
       "thumb": "assets/thumbs/prong-ring.jpg",
       "tags": ["Jewelry", "CAD"],
-      "hdris": ["studio_small_08_1k.hdr", "venice_sunset_1k.hdr"]
+      "hdris": ["studio_small_08_1k.hdr", "venice_sunset_1k.hdr"],
+      "gallery": ["assets/thumbs/prong-ring.jpg"]
     }
   ]
 }
